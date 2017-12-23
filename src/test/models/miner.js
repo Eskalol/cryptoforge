@@ -58,6 +58,7 @@ describe('Miner model', () => {
       return organization.save()
         .then((org) => genMiner(org));
     });
+
     it('should reject when saving with a blank name', () => {
       miner.name = '';
       return expect(miner.save()).to.be.rejected;
@@ -72,6 +73,7 @@ describe('Miner model', () => {
       miner.name = undefined;
       return expect(miner.save()).to.be.rejected;
     });
+
     it('should be an unique name', () => {
       return expect(miner.save()
         .then(() => {
