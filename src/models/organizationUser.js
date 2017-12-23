@@ -4,12 +4,12 @@ const organizationUserSchema = new mongoose.Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
   organization: {
     type: Schema.Types.ObjectId,
     ref: 'Organization',
-    required: true
+    required: true,
   },
   role: {
     type: String,
@@ -17,9 +17,9 @@ const organizationUserSchema = new mongoose.Schema({
   },
   invite: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 });
 
-organizationUserSchema.index({ user: 1, organization: 1}, { unique: true });
+organizationUserSchema.index({ user: 1, organization: 1 }, { unique: true });
 export default mongoose.model('OrganizationUser', organizationUserSchema);

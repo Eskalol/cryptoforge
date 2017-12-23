@@ -9,22 +9,22 @@ import config from './environment/';
 
 const generateUsers = () => {
   User.find({}).remove()
-  .then(() => {
-    User.create({
-      name: 'Admin',
-      email: 'admin@example.com',
-      role: 'admin',
-      password: 'admin',
-      provider: 'local',
-    }, {
-      name: 'Test',
-      email: 'test@example.com',
-      role: 'user',
-      password: 'test',
-      provider: 'local',
+    .then(() => {
+      User.create({
+        name: 'Admin',
+        email: 'admin@example.com',
+        role: 'admin',
+        password: 'admin',
+        provider: 'local',
+      }, {
+        name: 'Test',
+        email: 'test@example.com',
+        role: 'user',
+        password: 'test',
+        provider: 'local',
+      });
     });
-  });
-}
+};
 
 const generatePersons = () => {
   Person.find({}).remove()
@@ -51,6 +51,6 @@ const generatePersons = () => {
 export default function seedDB() {
   if (config.seedDB) {
     generatePersons();
-generateUsers();
+    generateUsers();
   }
 }

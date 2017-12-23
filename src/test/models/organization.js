@@ -11,6 +11,7 @@ const genOrganization = () => {
     email: 'cool@example.com',
     url: 'lol.com'
   });
+  return organization;
 };
 
 describe('Ornagization model', () => {
@@ -49,6 +50,20 @@ describe('Ornagization model', () => {
           url: 'imba.com'
         }).save();
     })).to.be.rejected;
+  });
+
+  describe('create organization successfully', () => {
+    beforeEach(() => {
+      return Organization.remove()
+        .then(() => genOrganization().save());
+    });
+
+    it('should have created organization', () => {
+      return Organization.findById(organization._id)
+        .then(org => {
+          expect(org.name).to.be.eql('cool');
+        });
+    });
   });
 
   describe('#name', () => {

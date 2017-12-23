@@ -31,7 +31,7 @@ const all = {
       },
     },
   },
-  
+
   // Set secret in environment for production!
   secrets: {
     session: process.env.SECRET_SESSION || 'random-secret',

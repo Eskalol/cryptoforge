@@ -3,14 +3,14 @@ import mongoose, { Schema } from 'mongoose';
 const minerSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   description: String,
   location: String,
   organization: {
     type: Schema.Types.ObjectId,
-    ref: 'organization'
-  }
+    ref: 'organization',
+  },
 });
 
 export default mongoose.model('Miner', minerSchema);
