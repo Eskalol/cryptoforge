@@ -21,5 +21,13 @@ const organizationUserSchema = new mongoose.Schema({
   },
 });
 
+organizationUserSchema.query.filterUserIsPartOf = function (user) {
+  return this.find({ user: user._id, invite: false });
+};
+
+organizationUserSchema.query.filterUserHasInvite = function (user) {
+  return this.find({ user: user._id, invite: true });
+};
+
 organizationUserSchema.index({ user: 1, organization: 1 }, { unique: true });
 export default mongoose.model('OrganizationUser', organizationUserSchema);
