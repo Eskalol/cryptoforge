@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import OrganizationUser from './organizationUser';
+
 
 const organizationSchema = new mongoose.Schema({
   name: {
@@ -11,5 +13,17 @@ const organizationSchema = new mongoose.Schema({
   email: String,
   url: String,
 });
+
+organizationSchema.query.filterUserIsPartOf = function (user) {
+  return OrganizationUser.find().filterUserIsPartOf(user)
+    .then(orgusers => orgusers.map(orguser => orguser.organization))
+    .then(orgs => this.find({ _id: { $in: orgs } }));
+};
+
+organizationSchema.query.filterUserHasInvite = function (user) {
+  return OrganizationUser.find().filterUserHasInvite(user)
+    .then(orgusers => orgusers.map(orguser => orguser.organization))
+    .then(orgs => this.find({ _id: { $in: orgs } }));
+};
 
 export default mongoose.model('Organization', organizationSchema);
