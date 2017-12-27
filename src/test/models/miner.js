@@ -145,20 +145,29 @@ describe('Miner model', () => {
         .then(org => organization3 = org)
         .then(() => new OrganizationUser({
           user: user1,
-          organization: organization1
+          organization: organization1,
+          invite: false
         }).save())
         .then(() => new OrganizationUser({
           user: user1,
-          organization: organization3
+          organization: organization3,
+          invite: false
         }).save())
         .then(() => new OrganizationUser({
           user: user2,
-          organization: organization1
+          organization: organization1,
+          invite: false
         }).save())
         .then(() => new OrganizationUser({
           user: user2,
-          organization: organization2
-        }))
+          organization: organization2,
+          invite: false
+        }).save())
+        .then(() => new OrganizationUser({
+          user: user1,
+          organization: organization2,
+          invite: true
+        }).save())
         .then(() => new Miner({
           name: 'Miner 1',
           organization: organization1
@@ -178,26 +187,46 @@ describe('Miner model', () => {
 
     afterEach(() => {
       return Organization.remove()
+        .then(() => OrganizationUser.remove())
         .then(() => User.remove())
         .then(() => Miner.remove())
     });
 
-    describe('filterUser', () => {
-      it('should print lol', () => {
-        return Miner.find().exec()
-          .then(miners => {
-            console.log(miners);
-          });
+    describe('filterUserHasAccessUser', () => {
+      it('should only contain miners that user have access to', async () => {
+        const miners1 = await Miner.find().filterUserHasAccessUser(user1)
+          .then(miners => miners.map(miner => miner.name));
+        const miners2 = await Miner.find().filterUserHasAccessUser(user2)
+          .then(miners => miners.map(miner => miner.name));
 
+        assert.include(miners1, miner1.name);
+        assert.include(miners1, miner3.name);
+        assert.notInclude(miners1, miner2.name);
+
+        assert.include(miners2, miner1.name);
+        assert.include(miners2, miner2.name);
+        assert.notInclude(miners2, miner3.name);
       });
-      it('should only contain miners that user have access to', () => {
+    });
 
-        return Miner.find().filterUser(user1).exec()
-          .then(miners => {
-            console.log(miners);
-            // let minerNames = miners.map(miner => miner.name);
-            // expect(minerNames).assert.includeMembers(minerNames, ['Miner 1', 'Miner 3']);
-          });
+    describe('filterUserHasAccessWithinOrganization', () => {
+      it('should have access to miner in organization', async () => {
+        let miners = await Miner.find().filterUserHasAccessWithinOrganization(user1, organization1._id);
+        miners = miners.map(miner => miner.name);
+        assert.include(miners, 'Miner 1');
+        assert.notInclude(miners, 'Miner 2');
+        assert.notInclude(miners, 'Miner 3');
+      });
+
+      it('should not have access to miners when not part of organization', async () => {
+        let miners = await Miner.find().filterUserHasAccessWithinOrganization(user1, organization2._id);
+        miners = miners.map(miner => miner.name);
+        expect(miners).to.be.empty;
+      });
+
+      it('should not have access to miners when have a pending invite to an organization', async () => {
+        let miners = await Miner.find().filterUserHasAccessWithinOrganization(user1, organization2._id);
+        expect(miners).to.be.empty;
       });
     });
   });
