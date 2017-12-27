@@ -23,7 +23,9 @@ const minerSchema = new mongoose.Schema({
  */
 minerSchema.query.filterUserHasAccessUser = function (user) {
   return OrganizationUser.find().filterUserIsPartOf(user)
-    .then(orgusers => this.find({ organization: { $in: orgusers.map(orguser => orguser.organization)}}));
+    .then(orgusers => this.find({
+      organization: { $in: orgusers.map(orguser => orguser.organization) },
+    }));
 };
 
 /**
@@ -35,11 +37,11 @@ minerSchema.query.filterUserHasAccessUser = function (user) {
 minerSchema.query.filterUserHasAccessWithinOrganization = function (user, organizationId) {
   return Organization.findById(organizationId)
     .then(org => org.userHasAccess(user))
-    .then(access => {
+    .then((access) => {
       if (!access) {
         return [];
       }
-      return this.find({ organization: organizationId })
+      return this.find({ organization: organizationId });
     })
     .catch(() => []);
 };

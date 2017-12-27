@@ -15,10 +15,8 @@ const organizationSchema = new mongoose.Schema({
 });
 
 organizationSchema.methods.userHasAccess = function (user) {
-  return OrganizationUser.findOne({ user: user, organization: this._id, invite: false })
-    .then(orguser => {
-      return !!orguser;
-    });
+  return OrganizationUser.findOne({ user, organization: this._id, invite: false })
+    .then(orguser => !!orguser);
 };
 
 organizationSchema.query.filterUserIsPartOf = function (user) {
