@@ -206,4 +206,80 @@ describe('Ornagization model', () => {
       });
     });
   });
+
+  describe('methods', () => {
+    let user1;
+    let user2;
+    let organization1;
+    let organization2;
+    let organization3;
+
+    beforeEach(() => {
+      user1 = new User({
+        provider: 'local',
+        name: 'Fake User',
+        email: 'test1@example.com',
+        password: 'password'
+      });
+      organization1 = new Organization({
+        name: 'org1',
+        description: 'awesome organization',
+        location: 'Karasjok',
+        email: 'cool@example.com',
+        url: 'lol.com'
+      });
+      organization2 = new Organization({
+        name: 'org2',
+        description: 'awesome organization',
+        location: 'Karasjok',
+        email: 'cool@example.com',
+        url: 'lol.com'
+      });
+      organization3 = new Organization({
+        name: 'org3',
+        description: 'awesome organization',
+        location: 'Karasjok',
+        email: 'cool@example.com',
+        url: 'lol.com'
+      });
+      return user1.save()
+        .then(user => user1 = user)
+        .then(() => organization1.save())
+        .then(org => organization1 = org)
+        .then(() => organization2.save())
+        .then(org => organization2 = org)
+        .then(() => organization3.save())
+        .then(org => organization3 = org)
+        .then(() => new OrganizationUser({
+          user: user1,
+          organization: organization1,
+          invite: false
+        }).save())
+        .then(() => new OrganizationUser({
+          user: user1,
+          organization: organization3,
+          invite: true
+        }).save());
+    });
+
+    afterEach(() => {
+      return Organization.remove()
+        .then(() => OrganizationUser.remove())
+        .then(() => User.remove());
+    });
+
+    describe('userHasAccess', () => {
+      it('should have access', async () => {
+        return expect(await organization1.userHasAccess(user1)).to.be.true;
+      });
+
+      it('should not have access', async () => {
+        return expect(await organization2.userHasAccess(user1)).to.be.false;
+      });
+
+      it('should not have access while user has invite to organization', async () => {
+        return expect(await organization3.userHasAccess(user1)).to.be.false;
+      });
+    });
+  });
 });
