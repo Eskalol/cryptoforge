@@ -27,6 +27,77 @@ securityDefinitions:
 
 
 paths:
+  /organization/{id}:
+    x-swagger-router-controller: organization
+    get:
+      description: Gets a specific organization
+      operationId: showOrganization
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: id of organization
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/OrganizationResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /organization:
+    x-swagger-router-controller: organization
+    get:
+      description: Gets a list of organizations which request user is part of
+      operationId: indexOrganization
+      security:
+      - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/OrganizationsResponse'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    
+    post:
+      description: Create a new organization
+      operationId: createOrganization
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - in: body
+          name: body
+          description: Organization data
+          required: true
+          schema:
+            $ref: "#/definitions/Organization"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/OrganizationResponse'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /person/{id}:
     x-swagger-router-controller: person
     get:
@@ -344,10 +415,82 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  PersonListResponse:
-    type: array
-    items:
-      type: object
+    OrganizationResponse:
+      required:
+        - _id
+        - name
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        email:
+          type: string
+        url:
+          type: string
+  
+    MinerResponse:
+      required:
+        - _id
+        - name
+        - organization
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        organization:
+          type: string
+  
+    MinersResponse:
+      type: array
+      items:
+        $ref: "#/definitions/Miner"
+    
+    OrganizationsResponse:
+      type: array
+      items:
+        $ref: "#/definitions/Organization"
+    
+    OrganizationInvitesResponse:
+      type: array
+      items:
+        type: object
+        required:
+          - _id
+          - name
+        properties:
+          _id:
+            type: string
+          name:
+            type: string
+
+
+    PersonListResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+          name:
+            type: string
+          description:
+            type: string
+          age:
+            type: integer
+  
+    PersonResponse:
+      required:
+        - _id
       properties:
         _id:
           type: string
@@ -357,24 +500,24 @@ definitions:
           type: string
         age:
           type: integer
-
-  PersonResponse:
-    required:
-      - _id
-    properties:
-      _id:
-        type: string
-      name:
-        type: string
-      description:
-        type: string
-      age:
-        type: integer
-
-  UserListResponse:
-    type: array
-    items:
-      type: object
+  
+    UserListResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+          name:
+            type: string
+          email:
+            type: string
+          role:
+            type: string
+  
+    UserResponse:
+      required:
+        - _id
       properties:
         _id:
           type: string
@@ -384,122 +527,165 @@ definitions:
           type: string
         role:
           type: string
-
-  UserResponse:
-    required:
-      - _id
-    properties:
-      _id:
+    
+    PatchRequest:
+      type: array
+      items:
+        $ref: "#/definitions/PatchDocument"
+  
+    PatchDocument:
+      description: A JSONPatch document as defined by RFC 6902
+      required:
+       - "op"
+       - "path"
+      properties:
+       op:
         type: string
-      name:
+        description: The operation to be performed
+        enum:
+         - "add"
+         - "remove"
+         - "replace"
+         - "move"
+         - "copy"
+         - "test"
+       path:
         type: string
-      email:
+        description: A JSON-Pointer
+       value:
+        type: object
+        description: The value to be used within the operations.
+       from:
         type: string
-      role:
-        type: string
-
-  PatchRequest:
-    type: array
-    items:
-      $ref: "#/definitions/PatchDocument"
-
-  PatchDocument:
-    description: A JSONPatch document as defined by RFC 6902
-    required:
-     - "op"
-     - "path"
-    properties:
-     op:
-      type: string
-      description: The operation to be performed
-      enum:
-       - "add"
-       - "remove"
-       - "replace"
-       - "move"
-       - "copy"
-       - "test"
-     path:
-      type: string
-      description: A JSON-Pointer
-     value:
+        description: A string containing a JSON Pointer value.
+    
+  # Post definitions
+    Person:
+      title: A person
       type: object
-      description: The value to be used within the operations.
-     from:
-      type: string
-      description: A string containing a JSON Pointer value.
-
-# Post definitions
-  Person:
-    title: A person
-    type: object
-    required:
-      - name
-      - description
-      - age
-    properties:
-      name:
-        type: string
-      description:
-        type: string
-      age:
-        type: integer
-
-
-  User:
-    title: A user
-    type: object
-    required:
-      - email
-      - password
-      - name
-    properties:
-      name:
-        type: string
-      email:
-        type: string
-      password:
-        type: string
-
-  UserEmailPassword:
-    title: email and password
-    type: object
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-
-  AuthLogin:
-    title: login
-    type: object
-    required:
-      - email
-      - password
-    properties:
-      email:
-        type: string
-      password:
-         type: string
-
-  AuthTokenResponse:
-    description: jwt token
-    required:
-      - token
-    properties:
-      token:
-        type: string
-
-  ErrorResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
-
-  SuccessResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
+      required:
+        - name
+        - description
+        - age
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        age:
+          type: integer
+    
+    Organization:        
+      title: An organization
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        email:
+          type: string
+        url:
+          type: string
+    
+    OrganizationInvite:
+      title: An invite to an organization
+      type: object
+      required:
+        - email
+        - organization
+      properties:
+        email:
+          type: string
+        organization:
+          type: string
+          
+    OrganizationInviteRequest:
+      title: Answer an invite
+      type: object
+      required:
+        - _id
+        - answer
+      properties:
+        _id:
+          type: string
+        answer:
+          type: boolean
+          
+    Miner:
+      title: A miner
+      type: object
+      required:
+        - name
+        - organization
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        organization:
+          type: string
+    
+    User:
+      title: A user
+      type: object
+      required:
+        - email
+        - password
+        - name
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+  
+    UserEmailPassword:
+      title: email and password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+  
+    AuthLogin:
+      title: login
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+           type: string
+    
+    AuthTokenResponse:
+      description: jwt token
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          
+    ErrorResponse:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+  
+    SuccessResponse:
+      required:
+        - message
+      properties:
+        message:
+          type: string
