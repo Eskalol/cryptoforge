@@ -13,6 +13,7 @@ const minerSchema = new mongoose.Schema({
   organization: {
     type: Schema.Types.ObjectId,
     ref: 'organization',
+    required: true,
   },
 });
 

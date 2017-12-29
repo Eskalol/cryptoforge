@@ -8,7 +8,7 @@ import config from '../../config/environment';
 
 const verify = promisify(jwt.verify);
 
-var user;
+let user;
 const genUser = () => {
   user = new User({
     name: 'Fake User',
@@ -18,7 +18,7 @@ const genUser = () => {
     role: 'user'
   });
   return user;
-}
+};
 
 describe('controllers', () => {
   describe('auth', () => {

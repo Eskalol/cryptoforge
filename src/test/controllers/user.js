@@ -18,7 +18,7 @@ const generateUser = (name, email, password, role) => {
     password,
     role
   }).save();
-}
+};
 
 const generateRequestUser = (role) => {
   requestUser = new User({
@@ -36,7 +36,7 @@ describe('controllers', () => {
     describe('POST /user', () => {
       after(() => {
         return User.remove();
-      })
+      });
       it('should create user normally', (done) => {
         request(server)
           .post('/user')
