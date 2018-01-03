@@ -27,6 +27,149 @@ securityDefinitions:
 
 
 paths:
+  /miner/organization/{organizationId}:
+    x-swagger-router-controller: miner
+    get:
+      description: Gets all miners within an organization
+      operationId: indexMiner
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - name: organizationId
+          in: path
+          description: id of organization
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/MinersResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "403":
+          description: Forbidden
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      description: Creates a new miner within an organization
+      operationId: createMiner
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - name: organizationId
+          in: path
+          description: id of organization
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: miner data
+          required: true
+          schema:
+            $ref: "#/definitions/Miner"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/MinerResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "403":
+          description: Forbidden
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  
+  /miner/{id}:
+    x-swagger-router-controller: miner
+    put:
+      description: Updates a miner
+      operationId: upsertMiner
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: id of miner
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: miner data
+          required: true
+          schema:
+            $ref: "#/definitions/Miner"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/MinerResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "403":
+          description: Forbidden
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+            
+    delete:
+      description: Updates a miner
+      operationId: destroyMiner
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: id of miner
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "403":
+          description: Forbidden
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+            
   /organization/invite/{organizationId}/accept:
     x-swagger-router-controller: organizationInvite
     get:
@@ -48,6 +191,14 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "403":
+          description: Forbidden
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         default:
           description: Error
           schema:
@@ -71,11 +222,19 @@ paths:
           required: true
           type: string
       responses:
-        "204":
+        "200":
           description: Success
           schema:
             $ref:
               '#/definitions/SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "403":
+          description: Forbidden
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         default:
           description: Error
           schema:
@@ -93,21 +252,22 @@ paths:
         - admin
         - user
       responses:
-        "200":
-          description: Success
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                _id:
-                  type: string
-                name:
-                  type: string
-        default:
-          description: Error
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/OrganizationInvites"
+          "401":
+            description: Unauthorized
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+          "403":
+            description: Forbidden
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+          default:
+            description: error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
     
     post:
       description: Invites a user to an organization
@@ -129,10 +289,22 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/SuccessResponse'
-        default:
-          description: Error
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
             
   /organization/{id}:
     x-swagger-router-controller: organization
@@ -155,8 +327,16 @@ paths:
           description: Success
           schema:
             $ref: "#/definitions/OrganizationResponse"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         default:
-          description: Error
+          description: error
           schema:
             $ref: "#/definitions/ErrorResponse"
             
@@ -175,10 +355,14 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/OrganizationsResponse'
-        default:
-          description: Error
+        "401":
+          description: Unauthorized
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
     
     post:
       description: Create a new organization
@@ -202,6 +386,10 @@ paths:
             $ref: '#/definitions/OrganizationResponse'
         default:
           description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "401":
+          description: Unauthorized
           schema:
             $ref: "#/definitions/ErrorResponse"
             
@@ -434,7 +622,7 @@ definitions:
     MinersResponse:
       type: array
       items:
-        $ref: "#/definitions/Miner"
+        $ref: "#/definitions/MinerResponse"
     
     OrganizationsResponse:
       type: array
@@ -498,6 +686,12 @@ definitions:
        from:
         type: string
         description: A string containing a JSON Pointer value.
+    
+    OrganizationInvites:
+      title: List of organization invites
+      type: array
+      items:
+        $ref: '#/definitions/OrganizationInvite'
     
     Organization:        
       title: An organization

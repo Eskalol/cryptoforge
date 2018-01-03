@@ -71,11 +71,50 @@ const generateOrganizationUsers = async () => {
     }));
 };
 
+const genMiners = async () => {
+  const org1 = await Organization.findOne({ name: 'black rock mining' });
+  const org2 = await Organization.findOne({ name: 'Eska Mining' });
+  const org3 = await Organization.findOne({ name: 'secret organization' });
+  return Miner.find({}).remove()
+    .then(() => Miner.create({
+      name: 'nvidia miner 1',
+      organization: org1._id,
+      description: '8x1080ti',
+      location: 'Karasjok'
+    }, {
+      name: 'nvidia miner 2',
+      organization: org1._id,
+      description: '12x1070',
+      location: 'Karasjok'
+    }, {
+      name: 'nvidia miner 3',
+      organization: org1._id,
+      description: '12x1060',
+      location: 'Karasjok'
+    }, {
+      name: 'Vega miner',
+      organization: org2._id,
+      description: '12xvega64',
+      location: 'Oslo'
+    }, {
+      name: 'RX miner',
+      organization: org2._id,
+      description: '12xRX570',
+      location: 'Oslo'
+    }, {
+      name: 'Scrypt',
+      organization: org3._id,
+      description: 'Secret new awesome technology',
+      location: 'Area 51'
+    }));
+};
+
 export default async function seedDB() {
   if (config.seedDB) {
     console.log('*** [SEEDING DB] ***');
     await generateUsers();
     await generateOrganizations();
     await generateOrganizationUsers();
+    await genMiners();
   }
 }
