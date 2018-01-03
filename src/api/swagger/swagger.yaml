@@ -129,10 +129,6 @@ paths:
           description: Unauthorized
           schema:
             $ref: "#/definitions/ErrorResponse"
-        "403":
-          description: Forbidden
-          schema:
-            $ref: "#/definitions/ErrorResponse"
         default:
           description: Error
           schema:
@@ -159,10 +155,6 @@ paths:
             $ref: '#/definitions/SuccessResponse'
         "401":
           description: Unauthorized
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-        "403":
-          description: Forbidden
           schema:
             $ref: "#/definitions/ErrorResponse"
         default:
