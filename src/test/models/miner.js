@@ -219,14 +219,15 @@ describe('Miner model', () => {
       });
 
       it('should not have access to miners when not part of organization', async () => {
-        let miners = await Miner.find().filterUserHasAccessWithinOrganization(user1, organization2._id);
-        miners = miners.map(miner => miner.name);
-        expect(miners).to.be.empty;
+        let miners = await Miner.find().filterUserHasAccessWithinOrganization(user2, organization3._id)
+          .catch(() => null);
+        assert.isNull(miners);
       });
 
       it('should not have access to miners when have a pending invite to an organization', async () => {
-        let miners = await Miner.find().filterUserHasAccessWithinOrganization(user1, organization2._id);
-        expect(miners).to.be.empty;
+        let miners = await Miner.find().filterUserHasAccessWithinOrganization(user1, organization2._id)
+          .catch(() => null);
+        assert.isNull(miners);
       });
     });
   });

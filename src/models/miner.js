@@ -3,6 +3,14 @@ import OrganizationUser from './organizationUser';
 import Organization from './organization';
 
 
+export class MinerError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.name = 'Miner Error';
+  }
+}
+
+
 const minerSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -40,11 +48,13 @@ minerSchema.query.filterUserHasAccessWithinOrganization = function (user, organi
     .then(org => org.userHasAccess(user))
     .then((access) => {
       if (!access) {
-        return [];
+        throw new MinerError("User does not have access to Miner");
       }
       return this.find({ organization: organizationId });
     })
-    .catch(() => []);
+    .catch(err => {
+      throw err;
+    });
 };
 
 export default mongoose.model('Miner', minerSchema);
