@@ -27,6 +27,113 @@ securityDefinitions:
 
 
 paths:
+  /organization/invite/{organizationId}/accept:
+    x-swagger-router-controller: organizationInvite
+    get:
+      description: Request user accepts an invitation for an organization.
+      operationId: acceptInvite
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - name: organizationId
+          in: path
+          description: id of organization
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+        default:
+          description: Error
+          schema:
+            $ref:
+              '#/definitions/ErrorResponse'
+  
+  /organization/invite/{organizationId}/destroy:
+    x-swagger-router-controller: organizationInvite
+    delete:
+      description: Request user deletes an invitation from an organization.
+      operationId: destroyInvite
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - name: organizationId
+          in: path
+          description: id of organization
+          required: true
+          type: string
+      responses:
+        "204":
+          description: Success
+          schema:
+            $ref:
+              '#/definitions/SuccessResponse'
+        default:
+          description: Error
+          schema:
+            $ref:
+              '#/definitions/ErrorResponse'
+  
+  /organization/invite:
+    x-swagger-router-controller: organizationInvite
+    get:
+      description: Gets a list of all invites
+      operationId: indexInvites
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                name:
+                  type: string
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    
+    post:
+      description: Invites a user to an organization
+      operationId: createInvite
+      security:
+        - jwt: []
+      x-security-scope:
+        - admin
+        - user
+      parameters:
+        - in: body
+          name: body
+          description: email and organization id
+          required: true
+          schema:
+            $ref: "#/definitions/OrganizationInvite"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+            
   /organization/{id}:
     x-swagger-router-controller: organization
     get:

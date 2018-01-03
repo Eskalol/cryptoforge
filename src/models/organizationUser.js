@@ -1,5 +1,12 @@
 import mongoose, { Schema } from 'mongoose';
 
+export class OrganizationUserError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.name = 'OrganizationUser Error';
+  }
+}
+
 const organizationUserSchema = new mongoose.Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -19,6 +26,26 @@ const organizationUserSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+});
+
+organizationUserSchema.pre('save', async function (next) {
+  if (this.isModified('invite')) {
+    return next();
+  }
+  const orguser = await this.constructor.findOne({
+    user: this.user,
+    organization: this.organization
+  });
+
+  if (!!orguser) {
+    if (orguser.invite) {
+      return next(new OrganizationUserError('User already invited to organization'));
+    } else {
+      return next(new OrganizationUserError('User is already member of the organization'));
+    }
+  } else {
+    return next();
+  }
 });
 
 organizationUserSchema.query.filterUserIsPartOf = function (user) {
