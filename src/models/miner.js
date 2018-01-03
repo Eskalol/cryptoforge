@@ -48,11 +48,11 @@ minerSchema.query.filterUserHasAccessWithinOrganization = function (user, organi
     .then(org => org.userHasAccess(user))
     .then((access) => {
       if (!access) {
-        throw new MinerError("User does not have access to Miner");
+        throw new MinerError('User does not have access to Miner');
       }
       return this.find({ organization: organizationId });
     })
-    .catch(err => {
+    .catch((err) => {
       throw err;
     });
 };

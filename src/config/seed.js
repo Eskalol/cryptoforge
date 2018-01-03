@@ -80,32 +80,32 @@ const genMiners = async () => {
       name: 'nvidia miner 1',
       organization: org1._id,
       description: '8x1080ti',
-      location: 'Karasjok'
+      location: 'Karasjok',
     }, {
       name: 'nvidia miner 2',
       organization: org1._id,
       description: '12x1070',
-      location: 'Karasjok'
+      location: 'Karasjok',
     }, {
       name: 'nvidia miner 3',
       organization: org1._id,
       description: '12x1060',
-      location: 'Karasjok'
+      location: 'Karasjok',
     }, {
       name: 'Vega miner',
       organization: org2._id,
       description: '12xvega64',
-      location: 'Oslo'
+      location: 'Oslo',
     }, {
       name: 'RX miner',
       organization: org2._id,
       description: '12xRX570',
-      location: 'Oslo'
+      location: 'Oslo',
     }, {
       name: 'Scrypt',
       organization: org3._id,
       description: 'Secret new awesome technology',
-      location: 'Area 51'
+      location: 'Area 51',
     }));
 };
 
