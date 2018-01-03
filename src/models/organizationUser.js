@@ -34,18 +34,16 @@ organizationUserSchema.pre('save', async function (next) {
   }
   const orguser = await this.constructor.findOne({
     user: this.user,
-    organization: this.organization
+    organization: this.organization,
   });
 
-  if (!!orguser) {
+  if (orguser) {
     if (orguser.invite) {
       return next(new OrganizationUserError('User already invited to organization'));
-    } else {
-      return next(new OrganizationUserError('User is already member of the organization'));
     }
-  } else {
-    return next();
+    return next(new OrganizationUserError('User is already member of the organization'));
   }
+  return next();
 });
 
 organizationUserSchema.query.filterUserIsPartOf = function (user) {
