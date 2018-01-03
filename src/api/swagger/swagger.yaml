@@ -205,132 +205,6 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
-  /person/{id}:
-    x-swagger-router-controller: person
-    get:
-      description: Gets a specific person
-      operationId: showPerson
-      parameters:
-        - name: id
-          in: path
-          description: id of user
-          required: true
-          type: string
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/PersonResponse"
-
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
-    put:
-      description: upsert a person
-      operationId: upsertPerson
-      parameters:
-        - name: id
-          in: path
-          description: id of user
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Person object data to update
-          required: true
-          schema:
-            $ref: '#/definitions/Person'
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/PersonResponse"
-
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
-    patch:
-      description: partial update of a person
-      operationId: patchPerson
-      parameters:
-        - name: id
-          in: path
-          description: id of user
-          required: true
-          type: string
-        - name: JsonPatch
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/PatchRequest"
-
-      responses:
-        "204":
-          description: Success
-          schema:
-            $ref: "#/definitions/PersonResponse"
-
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
-    delete:
-      description: delete a specific user
-      operationId: destroyPerson
-      parameters:
-        - name: id
-          in: path
-          description: id of user
-          required: true
-          type: string
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/SuccessResponse"
-        default:
-            description: Error
-            schema:
-              $ref: "#/definitions/ErrorResponse"
-  /person:
-    x-swagger-router-controller: person
-    get:
-      description: Returns a list of all persons
-      operationId: indexPerson
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/PersonListResponse"
-
-    post:
-      description: Creates a person
-      operationId: createPerson
-      parameters:
-        - in: body
-          name: body
-          description: Person object added to the databse
-          required: true
-          schema:
-            $ref: '#/definitions/Person'
-
-      responses:
-        "201":
-          description: Success
-          schema:
-            $ref: "#/definitions/PersonResponse"
-
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
-
   /user/me:
     x-swagger-router-controller: user
     put:
@@ -566,48 +440,7 @@ definitions:
       type: array
       items:
         $ref: "#/definitions/Organization"
-    
-    OrganizationInvitesResponse:
-      type: array
-      items:
-        type: object
-        required:
-          - _id
-          - name
-        properties:
-          _id:
-            type: string
-          name:
-            type: string
 
-
-    PersonListResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          _id:
-            type: string
-          name:
-            type: string
-          description:
-            type: string
-          age:
-            type: integer
-  
-    PersonResponse:
-      required:
-        - _id
-      properties:
-        _id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        age:
-          type: integer
-  
     UserListResponse:
       type: array
       items:
@@ -666,22 +499,6 @@ definitions:
         type: string
         description: A string containing a JSON Pointer value.
     
-  # Post definitions
-    Person:
-      title: A person
-      type: object
-      required:
-        - name
-        - description
-        - age
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        age:
-          type: integer
-    
     Organization:        
       title: An organization
       type: object
@@ -710,18 +527,6 @@ definitions:
           type: string
         organization:
           type: string
-          
-    OrganizationInviteRequest:
-      title: Answer an invite
-      type: object
-      required:
-        - _id
-        - answer
-      properties:
-        _id:
-          type: string
-        answer:
-          type: boolean
           
     Miner:
       title: A miner
